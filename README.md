@@ -1,75 +1,140 @@
-# React + TypeScript + Vite
+# Rental Platform (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + TypeScript + Vite frontend for a rental marketplace. The codebase is organized by feature (auth, bookings, payments, properties) and role (guest, host), with shared UI components, Zustand stores, and an Axios-based API layer.
 
-Currently, two official plugins are available:
+## Tech stack
+- React 19 + TypeScript 5
+- Vite 7 (dev server, build, preview)
+- React Router (client-side routing)
+- Zustand (state management)
+- Axios (API calls)
+- Tailwind CSS + PostCSS (styling)
+- Formik + Yup (forms + validation)
+- date-fns, framer-motion, react-toastify, react-icons
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Getting started
+1. Install dependencies
+   - `npm install`
+2. Configure environment variables
+   - Create/update `.env` at the project root.
+   - Required variables:
+     - `VITE_API_BASE_URL` (base URL for the backend API)
+3. Start the dev server
+   - `npm run dev`
 
-## React Compiler
+The Vite dev server runs on port `5173` and will open a browser automatically.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Scripts
+- `npm run dev` - start Vite dev server
+- `npm run build` - type-check and build for production
+- `npm run lint` - run ESLint
+- `npm run preview` - preview the production build locally
 
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project structure
+```
+public/
+src/
+  api/
+    axiosInstance.ts
+    auth.api.ts
+    booking.api.ts
+    favorite.api.ts
+    inquiry.api.ts
+    payment.api.ts
+    property.api.ts
+    user.api.ts
+  assets/
+    styles/
+      global.css
+      variable.css
+  components/
+    common/
+      Button.tsx
+      Input.tsx
+      Loader.tsx
+      Modal.tsx
+    features/
+      auth/
+      bookings/
+      favorites/
+      payments/
+      properties/
+    layout/
+      Footer.tsx
+      MainLayout.tsx
+      Navbar.tsx
+      Sidebar.tsx
+    ui/
+      ImageSlider.tsx
+      PriceTag.tsx
+      PropertyCard.tsx
+  data/
+    mock-database.json
+  hooks/
+    useAuth.ts
+    useDebounce.ts
+    useFetch.ts
+    useRole.ts
+  pages/
+    guest/
+      BrowseProperties.tsx
+      Favorite.tsx
+      GuestDashboard.tsx
+      myBooking.tsx
+    host/
+      Booking.tsx
+      HostDashboard.tsx
+      MyProperties.tsx
+      ReportPage.tsx
+    public/
+      LandingPage.tsx
+      NotFound.tsx
+      Unauthorized.tsx
+    shared/
+      EditProfile.tsx
+      inquiry.tsx
+      Profile.tsx
+      PropertyDetails.tsx
+  routes/
+    AppRoutes.tsx
+    ProtectedRoutes.tsx
+    RoleRoute.tsx
+  services/
+    analytics.service.ts
+    notification.service.ts
+    storage.service.ts
+  store/
+    auth.store.ts
+    user.store.ts
+  utils/
+    calculatePrice.ts
+    constants.ts
+    formatDate.ts
+    validateForm.ts
+  App.tsx
+  index.css
+  main.tsx
+  tailwind.config.cjs
+vite.config.ts
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## App flow overview
+- `main.tsx` mounts the app and sets up `BrowserRouter`.
+- `App.tsx` is the root component.
+- `routes/` contains scaffolding for route guards and role-based routing.
+- `pages/` are grouped by user role and visibility.
+- `components/` holds reusable UI and feature components.
+- `api/` and `services/` organize API calls and helper services.
+- `store/` keeps global state with Zustand.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Path aliases
+The alias `@` maps to `/src` (configured in `vite.config.ts` via `vite-tsconfig-paths`).
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Example:
 ```
+import { Button } from "@/components/common/Button";
+```
+
+## Notes
+- Tailwind config lives in `src/tailwind.config.cjs` and is referenced by `src/index.css`.
+- `AppRoutes.tsx` and `pages/index.ts` are currently empty scaffolds.

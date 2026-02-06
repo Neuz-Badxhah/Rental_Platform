@@ -1,7 +1,8 @@
 function Button() {
   return (
     <>
-      <H1>After change</H1>
+      <button type="submit">Click Me</button>
+      <h2>Hello Nepal</h2>
     </>
   );
 }
